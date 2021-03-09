@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -37,6 +38,9 @@ public class WindowSelectColor extends JFrame {
 
     /** show the value hex of the color*/
     private JLabel valueHex;
+
+    /** show the value hexa and can be a input*/
+    private JTextField valueHexDisplay;
 
     /** the cursor for select color*/
     private final Cursor cursorSelect = new Cursor(Cursor.CROSSHAIR_CURSOR);
@@ -125,6 +129,21 @@ public class WindowSelectColor extends JFrame {
         setInfoColor(color);
     }
 
+    /**do the action when a hex is input*/
+    private void actionInInputHex(ActionEvent event){
+        String value = valueHexDisplay.getText().replace(" ", "");
+        Color color;
+        try {
+            color = Color.decode(value);
+        } catch (Exception e){
+            valueHexDisplay.setForeground(Color.decode("#ff001b"));
+            return;
+        }
+        setInfoColor(color);
+        arrayColor.setValueOfColor(color);
+        arrayColor.paint(arrayColor.getGraphics());
+    }
+
     /** create all the JPanel and add them*/
     private void createComponent(){
         arrayColor = new ArrayColorSelector();
@@ -149,10 +168,13 @@ public class WindowSelectColor extends JFrame {
 
         valueRGB = new JLabel("Value RGB ");
         valueHex = new JLabel("Value hexadecimal ");
+        valueHexDisplay = new JTextField("      ");
+        valueHexDisplay.addActionListener(this::actionInInputHex);
 
         pane.add(colorSelect);
         pane.add(valueRGB);
         pane.add(valueHex);
+        pane.add(valueHexDisplay);
 
         return pane;
     }
@@ -161,7 +183,9 @@ public class WindowSelectColor extends JFrame {
     private void setInfoColor(Color color){
         colorSelect.setBackground(color);
         valueRGB.setText("Value RGB | R:" + color.getRed() + " G:" + color.getGreen() + " B:" + color.getBlue());
-        valueHex.setText("Value hexadecimal : #"+Integer.toHexString(color.getRGB()).substring(2));
+        valueHex.setText("Value hexadecimal :");
+        valueHexDisplay.setForeground(Color.BLACK);
+        valueHexDisplay.setText("#"+Integer.toHexString(color.getRGB()).substring(2));
     }
 
     /** return if the cord is in the array for select the color*/
