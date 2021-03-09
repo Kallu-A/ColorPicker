@@ -35,18 +35,27 @@ public class WindowSelectColor extends JFrame {
     /** show the value rgb of the color*/
     private JLabel valueRGB;
 
-    /** show the value hexa of the color*/
-    private JLabel valueHexa;
+    /** show the value hex of the color*/
+    private JLabel valueHex;
+
+    /** the cursor for select color*/
+    private Cursor cursorSelect = new Cursor(Cursor.CROSSHAIR_CURSOR);
+
+    /** the cursor normal*/
+    private Cursor cursorDefault = new Cursor(Cursor.DEFAULT_CURSOR);
 
     public WindowSelectColor() throws HeadlessException {
         super("Select your color");
 
+        //set
         setSize(WIDTH, HEIGHT );
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         setVisible(true);
         setLookAndFeel();
+
+
         this.contentPane =  (JPanel) getContentPane();
         contentPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         contentPane.setLayout(new BorderLayout(3,5));
@@ -54,7 +63,7 @@ public class WindowSelectColor extends JFrame {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseMoved(e);
-                MouseOnMove(e);
+                mouseOnMove(e);
             }
         });
 
@@ -62,7 +71,7 @@ public class WindowSelectColor extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                MouseOnMove(e);
+                mouseOnMove(e);
             }
         });
 
@@ -82,24 +91,40 @@ public class WindowSelectColor extends JFrame {
     }
 
     /** action when the mouse move*/
-    private void MouseOnMove(MouseEvent e){
+    private void mouseOnMove(MouseEvent e){
         int x = e.getX();
         int y = e.getY();
         Rectangle rectangle = contentPane.getBounds();
         BufferedImage pixel = new BufferedImage(rectangle.width,rectangle.height, BufferedImage.TYPE_INT_ARGB);
         contentPane.paintAll(pixel.createGraphics());
-        if (coordInArray(x, y)) {
-            Color color =new Color(pixel.getRGB(x,y), true);
-            setInfoColor(color);
-        } else {
-            if (coordInLine(x, y)){
-                Color color =new Color(pixel.getRGB(x,y), true);
-                arrayColor.setValueOfColor(color);
-                setInfoColor(color);
-                arrayColor.paint(arrayColor.getGraphics());
-            }
+        Color color;
+        //make sur the dragged doesn't create an error if the mouse is out of the JFrame
+        try {
+            color =new Color(pixel.getRGB(x,y), true);
+        } catch (Exception error){
+            return;
         }
 
+        if (cordInArray(x, y)) {
+            actionInArray(color);
+        } else {
+            if (cordInLine(x, y)){
+                actionInLine(color);
+            }
+        }
+    }
+
+
+    /** do the action when it's the line move*/
+    private void actionInLine(Color color){
+        arrayColor.setValueOfColor(color);
+        setInfoColor(color);
+        arrayColor.paint(arrayColor.getGraphics());
+    }
+
+    /** do the action on the array*/
+    private void actionInArray(Color color){
+        setInfoColor(color);
     }
 
     /** create all the JPanel and add them*/
@@ -125,11 +150,11 @@ public class WindowSelectColor extends JFrame {
         colorSelect.setOpaque(true);
 
         valueRGB = new JLabel("Value RGB ");
-        valueHexa = new JLabel("Value hexadecimal ");
+        valueHex = new JLabel("Value hexadecimal ");
 
         pane.add(colorSelect);
         pane.add(valueRGB);
-        pane.add(valueHexa);
+        pane.add(valueHex);
 
         return pane;
     }
@@ -138,16 +163,16 @@ public class WindowSelectColor extends JFrame {
     private void setInfoColor(Color color){
         colorSelect.setBackground(color);
         valueRGB.setText("Value RGB | R:" + color.getRed() + " G:" + color.getGreen() + " B:" + color.getBlue());
-        valueHexa.setText("Value hexadecimal : #"+Integer.toHexString(color.getRGB()).substring(2));
+        valueHex.setText("Value hexadecimal : #"+Integer.toHexString(color.getRGB()).substring(2));
     }
 
-    /** return if the coord is in the array for select the color*/
-    private boolean coordInArray(int x, int y){
+    /** return if the cord is in the array for select the color*/
+    private boolean cordInArray(int x, int y){
         return  (contentPane.getComponentAt(x, y) instanceof  ArrayColorSelector);
     }
 
-    /** return if the coord is in the line selector */
-    private boolean coordInLine(int x, int y){
+    /** return if the cord is in the line selector */
+    private boolean cordInLine(int x, int y){
         return (contentPane.getComponentAt(x, y) instanceof  LineSelectColor);
     }
 }

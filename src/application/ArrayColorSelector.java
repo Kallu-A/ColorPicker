@@ -18,9 +18,6 @@ public class ArrayColorSelector extends JPanel {
     private int valueOfGreen = 80;
     private int valueOfBlue = 20;
 
-    /** the graphics*/
-    private Graphics graphics;
-
     public ArrayColorSelector() {
         setSize(WIDTH, HEIGHT);
         setVisible(true);
@@ -31,7 +28,6 @@ public class ArrayColorSelector extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.WHITE);
-        graphics = g;
     }
 
     @Override
@@ -39,7 +35,7 @@ public class ArrayColorSelector extends JPanel {
         super.paint(g);
         for (int i = 0; i < WIDTH/ RATIO; i++){
             for (int j = 0; j < HEIGHT/ RATIO; j++){
-                g.setColor(new Color( setNorme( valueOfRed-j+i ), setNorme( valueOfGreen-j+i), setNorme( valueOfBlue-j+i  )));
+                g.setColor(new Color( setNorm( valueOfRed-j+i ), setNorm( valueOfGreen-j+i), setNorm( valueOfBlue-j+i  )));
                 g.fillRect(i*RATIO, j*RATIO, RATIO, RATIO);
             }
         }
@@ -52,10 +48,9 @@ public class ArrayColorSelector extends JPanel {
         this.valueOfGreen = color.getGreen();
     }
 
-    /** set the value beetwen in 0 255*/
-    private int setNorme(int value){
+    /** set the value between in 0 255*/
+    private int setNorm(int value){
         if (value < 0) return 0;
-        if (value > 255) return 255;
-        return value;
+        return Math.min(value, 255);
     }
 }
