@@ -39,10 +39,10 @@ public class WindowSelectColor extends JFrame {
     private JLabel valueHex;
 
     /** the cursor for select color*/
-    private Cursor cursorSelect = new Cursor(Cursor.CROSSHAIR_CURSOR);
+    private final Cursor cursorSelect = new Cursor(Cursor.CROSSHAIR_CURSOR);
 
     /** the cursor normal*/
-    private Cursor cursorDefault = new Cursor(Cursor.DEFAULT_CURSOR);
+    private final Cursor cursorDefault = new Cursor(Cursor.DEFAULT_CURSOR);
 
     public WindowSelectColor() throws HeadlessException {
         super("Select your color");
@@ -54,7 +54,6 @@ public class WindowSelectColor extends JFrame {
         setResizable(false);
         setVisible(true);
         setLookAndFeel();
-
 
         this.contentPane =  (JPanel) getContentPane();
         contentPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
@@ -74,7 +73,6 @@ public class WindowSelectColor extends JFrame {
                 mouseOnMove(e);
             }
         });
-
 
         createComponent();
 

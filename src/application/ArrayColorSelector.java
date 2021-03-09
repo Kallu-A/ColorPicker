@@ -6,7 +6,6 @@ import java.awt.*;
 /** it's create the array of color to pick*/
 public class ArrayColorSelector extends JPanel {
 
-
     /** height of the JPanel*/
     private static final int HEIGHT = 765;
     /** width of the JPanel*/
@@ -14,8 +13,11 @@ public class ArrayColorSelector extends JPanel {
     /** ratio of the value HEIGHT/RATIO = 255*/
     private static final int RATIO = 3;
 
+    /** value of the red*/
     private int valueOfRed = 180;
+    /** value of the green*/
     private int valueOfGreen = 80;
+    /** value of the blue*/
     private int valueOfBlue = 20;
 
     public ArrayColorSelector() {
@@ -35,7 +37,7 @@ public class ArrayColorSelector extends JPanel {
         super.paint(g);
         for (int i = 0; i < WIDTH/ RATIO; i++){
             for (int j = 0; j < HEIGHT/ RATIO; j++){
-                g.setColor(new Color( setNorm( valueOfRed-j+i ), setNorm( valueOfGreen-j+i), setNorm( valueOfBlue-j+i  )));
+                g.setColor(new Color( setNorm( valueOfRed-j+i ), setNorm( valueOfGreen-j+i ), setNorm( valueOfBlue-j+i ) ));
                 g.fillRect(i*RATIO, j*RATIO, RATIO, RATIO);
             }
         }
