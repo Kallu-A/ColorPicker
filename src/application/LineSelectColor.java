@@ -20,11 +20,11 @@ public class LineSelectColor extends JPanel {
         g.setColor(Color.WHITE);
 
         for (int i= 0 ; i < WIDTH; i++){
-            if (i <= 127) g.setColor(new Color(255, 255 - (i % RATIO), 0));
-            else if ( i <= 254) g.setColor(new Color(255 - (i % RATIO) * 2, 255, 0));
-            else if ( i <= 381) g.setColor(new Color(0, 255, (i % RATIO) *2 ));
-            else if ( i <= 508) g.setColor(new Color(0, 255 - (i % RATIO) *2, 255));
-            else if ( i <= 635) g.setColor(new Color((i % RATIO) *2, 0, 255));
+            if (i < 127) g.setColor(new Color(255, (i % RATIO)*2, 0));
+            else if ( i < 254) g.setColor(new Color(255 - (i % RATIO) * 2, 255, 0));
+            else if ( i < 381) g.setColor(new Color(0, 255, (i % RATIO) *2 ));
+            else if ( i < 508) g.setColor(new Color(0, 255 - (i % RATIO) *2, 255));
+            else if ( i < 635) g.setColor(new Color((i % RATIO) *2, 0, 255));
             else g.setColor(new Color(255, 0 ,255 - (i % RATIO) *2));
 
             g.fillRect(i,0,1,15);

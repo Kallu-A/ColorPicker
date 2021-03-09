@@ -1,7 +1,6 @@
 package application;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
@@ -13,10 +12,10 @@ import java.awt.image.BufferedImage;
 public class WindowSelectColor extends JFrame {
 
     /** the height of the JFrame */
-    public static final int HEIGHT = 800;
+    public static final int HEIGHT = 850;
 
     /** the width of the JFrame*/
-    public static final int WIDTH = 1100;
+    public static final int WIDTH = 765;
 
     /** JPanel with all the color*/
     private ArrayColorSelector arrayColor;
@@ -50,7 +49,7 @@ public class WindowSelectColor extends JFrame {
         setLookAndFeel();
         this.contentPane =  (JPanel) getContentPane();
         contentPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        contentPane.setLayout(new BorderLayout(2,5));
+        contentPane.setLayout(new BorderLayout(3,5));
         contentPane.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -86,11 +85,21 @@ public class WindowSelectColor extends JFrame {
     private void MouseOnMove(MouseEvent e){
         int x = e.getX();
         int y = e.getY();
-        if (!coordInArray(x, y)) return;
         Rectangle rectangle = contentPane.getBounds();
         BufferedImage pixel = new BufferedImage(rectangle.width,rectangle.height, BufferedImage.TYPE_INT_ARGB);
         contentPane.paintAll(pixel.createGraphics());
-        setInfoColor(pixel, x, y);
+        if (coordInArray(x, y)) {
+            Color color =new Color(pixel.getRGB(x,y), true);
+            setInfoColor(color);
+        } else {
+            if (coordInLine(x, y)){
+                Color color =new Color(pixel.getRGB(x,y), true);
+                arrayColor.setValueOfColor(color);
+                setInfoColor(color);
+                arrayColor.paint(arrayColor.getGraphics());
+            }
+        }
+
     }
 
     /** create all the JPanel and add them*/
@@ -101,7 +110,7 @@ public class WindowSelectColor extends JFrame {
 
         contentPane.add(arrayColor, BorderLayout.CENTER);
         contentPane.add(lineColor, BorderLayout.SOUTH);
-        contentPane.add(infoColor, BorderLayout.EAST);
+        contentPane.add(infoColor, BorderLayout.NORTH);
     }
 
 
@@ -110,35 +119,35 @@ public class WindowSelectColor extends JFrame {
         JPanel pane = new JPanel();
         pane.setMinimumSize(new Dimension( 60, 60));
         pane.setMaximumSize(new Dimension( 60, 60));
+        pane.setLayout(new FlowLayout());
 
-        colorSelect = new JLabel("");
-        colorSelect.setMinimumSize(new Dimension(20, 20));
+        colorSelect = new JLabel("     ");
         colorSelect.setOpaque(true);
 
         valueRGB = new JLabel("Value RGB ");
         valueHexa = new JLabel("Value hexadecimal ");
 
-        //pane.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-
-        pane.add(colorSelect, BorderLayout.NORTH);
-        pane.add(valueRGB, BorderLayout.CENTER);
-        pane.add(valueHexa, BorderLayout.SOUTH);
+        pane.add(colorSelect);
+        pane.add(valueRGB);
+        pane.add(valueHexa);
 
         return pane;
     }
 
     /** actualise all the date of the new pixel chose*/
-    private void setInfoColor(BufferedImage pixel, int x, int y){
-        Color color =new Color(pixel.getRGB(x,y), true);
+    private void setInfoColor(Color color){
         colorSelect.setBackground(color);
         valueRGB.setText("Value RGB | R:" + color.getRed() + " G:" + color.getGreen() + " B:" + color.getBlue());
         valueHexa.setText("Value hexadecimal : #"+Integer.toHexString(color.getRGB()).substring(2));
     }
 
-    /** return if the coord is in the array for select the color or not*/
+    /** return if the coord is in the array for select the color*/
     private boolean coordInArray(int x, int y){
-        if (contentPane.getComponentAt(x, y) instanceof  ArrayColorSelector) return true;
-        else return false;
+        return  (contentPane.getComponentAt(x, y) instanceof  ArrayColorSelector);
+    }
+
+    /** return if the coord is in the line selector */
+    private boolean coordInLine(int x, int y){
+        return (contentPane.getComponentAt(x, y) instanceof  LineSelectColor);
     }
 }
