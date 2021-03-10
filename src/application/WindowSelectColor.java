@@ -1,7 +1,5 @@
 package application;
 
-import jdk.swing.interop.SwingInterOpUtils;
-
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -9,10 +7,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 
 /** the Main class for the Window selector*/
 public class WindowSelectColor extends JFrame {
+
+    /** robot for handle the mouse dragged*/
+    private Robot robot;
+
+    /** get the current location of the mouse*/
+    private TriggerClass triggerMouse = TriggerClass.OUT;
 
     /** the height of the JFrame */
     public static final int HEIGHT = 850;
@@ -53,8 +58,15 @@ public class WindowSelectColor extends JFrame {
     /** the cursor normal*/
     public static Cursor cursorDefault = new Cursor(Cursor.DEFAULT_CURSOR);
 
+
     public WindowSelectColor() throws HeadlessException {
         super("Select your color");
+
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
 
         //set
         setSize(WIDTH, HEIGHT );
@@ -90,18 +102,38 @@ public class WindowSelectColor extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 super.mouseEntered(e);
+                triggerMouse = TriggerClass.ARRAYCOLORSELECTOR;
                 setCursor(cursorSelect);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
+                triggerMouse = TriggerClass.OUT;
                 setCursor(cursorDefault);
             }
+        });
 
+        arrayColor.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 super.mouseDragged(e);
+                if (triggerMouse != TriggerClass.ARRAYCOLORSELECTOR) {
+                    //math
+
+                    //location absolute from the screen of the array color
+                    int locationScreenX = (int) arrayColor.getLocationOnScreen().getX();
+                    int locationScreenY = (int) arrayColor.getLocationOnScreen().getY();
+
+                    // max value of the array color from the screen
+                    // -2 is the border
+                    int xMax = arrayColor.getWidth() + locationScreenX -2;
+                    int yMax = arrayColor.getHeight() + locationScreenY -2;
+
+                    // value of the mouse from the screen
+                    replaceOfMouse(e, locationScreenX, locationScreenY, xMax, yMax);
+
+                }
                 mouseOnMove(e, TriggerClass.ARRAYCOLORSELECTOR);
             }
         });
@@ -116,16 +148,55 @@ public class WindowSelectColor extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 super.mouseEntered(e);
+                triggerMouse = TriggerClass.LINESELECTOR;
                 setCursor(cursorSelect);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
+                triggerMouse = TriggerClass.OUT;
                 setCursor(cursorDefault);
             }
         });
 
+        lineColor.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                if (triggerMouse != TriggerClass.LINESELECTOR) {
+                    //math
+
+                    //location absolute from the screen of the line selector
+                    int locationScreenX = (int) lineColor.getLocationOnScreen().getX();
+                    int locationScreenY = (int) lineColor.getLocationOnScreen().getY();
+
+                    // max value of the array color from the screen
+                    int xMax = lineColor.getWidth() + locationScreenX -2;
+                    int yMax = lineColor.getHeight() + locationScreenY -2;
+
+                    System.out.println("Xscreen " +locationScreenX + " Yscreen " + locationScreenY + " xmax" + xMax + " yMax " + yMax);
+                    // value of the mouse from the screen
+                    replaceOfMouse(e, locationScreenX, locationScreenY, xMax, yMax);
+
+                }
+                mouseOnMove(e, TriggerClass.LINESELECTOR);
+            }
+        });
+
+    }
+
+    /** replace the mouse*/
+    private void replaceOfMouse(MouseEvent e, int locationScreenX, int locationScreenY, int xMax, int yMax) {
+        int mouseX = (int) e.getLocationOnScreen().getX();
+        int mouseY = (int) e.getLocationOnScreen().getY();
+        System.out.println("mouseX " + mouseX + " mouseY " + mouseY);
+
+        if (mouseX < locationScreenX) robot.mouseMove(locationScreenX, mouseY);
+        else if (mouseX > xMax) robot.mouseMove(xMax, mouseY);
+
+        if (mouseY < locationScreenY) robot.mouseMove(mouseX, locationScreenY);
+        else if (mouseY > yMax) robot.mouseMove(mouseX, yMax);
     }
 
 

@@ -2,8 +2,6 @@ package application;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /** it's create the array of color to pick*/
 public class ArrayColorSelector extends JPanel {

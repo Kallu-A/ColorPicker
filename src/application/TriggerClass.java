@@ -3,5 +3,6 @@ package application;
 public enum TriggerClass {
 
     ARRAYCOLORSELECTOR,
-    LINESELECTOR
+    LINESELECTOR,
+    OUT
 }
