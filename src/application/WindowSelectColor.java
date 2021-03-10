@@ -239,6 +239,8 @@ public class WindowSelectColor extends JFrame {
     private void actionInInputHex(ActionEvent event){
         String value = valueHexDisplay.getText().replace(" ", "");
         Color color;
+        if ('#' != value.charAt(0)) value = '#' + value;
+        if (value.length() == 4) value = "#" + value.charAt(1) + value.charAt(1) + value.charAt(2) + value.charAt(2) + value.charAt(3) + value.charAt(3);
         try {
             color = Color.decode(value);
         } catch (Exception e){
