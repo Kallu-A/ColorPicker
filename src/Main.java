@@ -1,4 +1,4 @@
-package application;
+import application.WindowSelectColor;
 
 public class Main {
 
