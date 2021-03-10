@@ -1,5 +1,7 @@
 package application;
 
+import jdk.swing.interop.SwingInterOpUtils;
+
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -46,10 +48,10 @@ public class WindowSelectColor extends JFrame {
     private JTextField valueHexDisplay;
 
     /** the cursor for select color*/
-    private final Cursor cursorSelect = new Cursor(Cursor.CROSSHAIR_CURSOR);
+    public static final Cursor cursorSelect = new Cursor(Cursor.CROSSHAIR_CURSOR);
 
     /** the cursor normal*/
-    private final Cursor cursorDefault = new Cursor(Cursor.DEFAULT_CURSOR);
+    public static Cursor cursorDefault = new Cursor(Cursor.DEFAULT_CURSOR);
 
     public WindowSelectColor() throws HeadlessException {
         super("Select your color");
@@ -65,44 +67,84 @@ public class WindowSelectColor extends JFrame {
         this.contentPane =  (JPanel) getContentPane();
         contentPane.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         contentPane.setLayout(new BorderLayout(3,5));
-        contentPane.addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                super.mouseMoved(e);
-                mouseOnMove(e);
-            }
-        });
-
-        contentPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                mouseOnMove(e);
-            }
-        });
 
         createComponent();
+
+        initMouseListenners();
 
         setInfoColor(new Color(180,80,20));
         setVisible(true);
     }
 
+    /** init mouselistenners*/
+    private void initMouseListenners(){
+
+        arrayColor.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                mouseOnMove(e, TriggerClass.ARRAYCOLORSELECTOR);
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                setCursor(cursorSelect);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                setCursor(cursorDefault);
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                super.mouseDragged(e);
+                mouseOnMove(e, TriggerClass.ARRAYCOLORSELECTOR);
+            }
+        });
+
+        lineColor.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                mouseOnMove(e, TriggerClass.LINESELECTOR);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                setCursor(cursorSelect);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                setCursor(cursorDefault);
+            }
+        });
+
+    }
+
+
     /** set the look and feel*/
     private void setLookAndFeel(){
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+        } catch ( Exception ignored) {}
     }
 
     /** action when the mouse move*/
-    private void mouseOnMove(MouseEvent e){
+    private void mouseOnMove(MouseEvent e, TriggerClass trigger){
         int x = e.getX();
         int y = e.getY();
-        Rectangle rectangle = contentPane.getBounds();
+        Rectangle rectangle = trigger == TriggerClass.LINESELECTOR ? lineColor.getBounds(): arrayColor.getBounds();
+
         BufferedImage pixel = new BufferedImage(rectangle.width,rectangle.height, BufferedImage.TYPE_INT_ARGB);
-        contentPane.paintAll(pixel.createGraphics());
+        if ( trigger == TriggerClass.LINESELECTOR) lineColor.paintAll(pixel.createGraphics());
+        else arrayColor.paintAll(pixel.createGraphics());
         Color color;
         //make sur the dragged doesn't create an error if the mouse is out of the JFrame
         try {
@@ -111,20 +153,14 @@ public class WindowSelectColor extends JFrame {
             return;
         }
 
-        if (cordInArray(x, y)) {
-            actionInArray(color);
-        } else {
-            if (cordInLine(x, y)){
-                actionInLine(color);
-            }
-        }
+        if (trigger == TriggerClass.LINESELECTOR) actionInLine(color);
+        else actionInArray(color);
     }
 
-
-    /** do the action when it's the line move*/
+    /** do the action in the lineSelect*/
     private void actionInLine(Color color){
-        arrayColor.setValueOfColor(color);
         setInfoColor(color);
+        arrayColor.setValueOfColor(color);
         arrayColor.paint(arrayColor.getGraphics());
     }
 
@@ -133,7 +169,7 @@ public class WindowSelectColor extends JFrame {
         setInfoColor(color);
     }
 
-    /**do the action when a hex is input*/
+    /**do the action when  hex is input*/
     private void actionInInputHex(ActionEvent event){
         String value = valueHexDisplay.getText().replace(" ", "");
         Color color;
@@ -148,7 +184,7 @@ public class WindowSelectColor extends JFrame {
         arrayColor.paint(arrayColor.getGraphics());
     }
 
-    /** do the actiion when rgb is input*/
+    /** do the action when rgb is input*/
     private void actionInInputRGB(ActionEvent event){
         String value = valueRGBdisplay.getText().replace(" ", "");
         String[] eachData = value.split(",");
@@ -180,7 +216,7 @@ public class WindowSelectColor extends JFrame {
     }
 
 
-    /** create the JPanel who contains all the date of the color pick*/
+    /** create the JPanel who contains all the data of the color pick*/
     private JPanel createInfoColor(){
         JPanel pane = new JPanel();
         pane.setMinimumSize(new Dimension( 60, 60));
@@ -215,15 +251,5 @@ public class WindowSelectColor extends JFrame {
         valueHex.setText("Value hexadecimal :");
         valueHexDisplay.setForeground(Color.BLACK);
         valueHexDisplay.setText("#"+Integer.toHexString(color.getRGB()).substring(2));
-    }
-
-    /** return if the cord is in the array for select the color*/
-    private boolean cordInArray(int x, int y){
-        return  (contentPane.getComponentAt(x, y) instanceof  ArrayColorSelector);
-    }
-
-    /** return if the cord is in the line selector */
-    private boolean cordInLine(int x, int y){
-        return (contentPane.getComponentAt(x, y) instanceof  LineSelectColor);
     }
 }

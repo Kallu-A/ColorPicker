@@ -2,6 +2,8 @@ package application;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /** it's create the array of color to pick*/
 public class ArrayColorSelector extends JPanel {
@@ -24,6 +26,7 @@ public class ArrayColorSelector extends JPanel {
         setSize(WIDTH, HEIGHT);
         setVisible(true);
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+
     }
 
     @Override
