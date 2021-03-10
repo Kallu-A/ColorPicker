@@ -3,7 +3,7 @@ package application;
 import javax.swing.*;
 import java.awt.*;
 
-/** it's create the array of color to pick*/
+/** create the array of color to pick*/
 public class ArrayColorSelector extends JPanel {
 
     /** height of the JPanel*/

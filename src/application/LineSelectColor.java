@@ -3,6 +3,7 @@ package application;
 import javax.swing.*;
 import java.awt.*;
 
+/** the line selector*/
 public class LineSelectColor extends JPanel {
 
     private final static int WIDTH = 765;

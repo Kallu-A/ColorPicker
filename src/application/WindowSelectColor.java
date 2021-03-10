@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 
-/** the Main class for the Window selector*/
+/** the application.Main class for the Window selector*/
 public class WindowSelectColor extends JFrame {
 
     /** robot for handle the mouse dragged*/
@@ -33,9 +33,6 @@ public class WindowSelectColor extends JFrame {
 
     /** the contentPane*/
     private final JPanel contentPane;
-
-    /** the JPanel where all the date of the color will be*/
-    private JPanel infoColor;
 
     /** show the color in big*/
     private JLabel colorSelect;
@@ -175,7 +172,6 @@ public class WindowSelectColor extends JFrame {
                     int xMax = lineColor.getWidth() + locationScreenX -2;
                     int yMax = lineColor.getHeight() + locationScreenY -2;
 
-                    System.out.println("Xscreen " +locationScreenX + " Yscreen " + locationScreenY + " xmax" + xMax + " yMax " + yMax);
                     // value of the mouse from the screen
                     replaceOfMouse(e, locationScreenX, locationScreenY, xMax, yMax);
 
@@ -190,7 +186,6 @@ public class WindowSelectColor extends JFrame {
     private void replaceOfMouse(MouseEvent e, int locationScreenX, int locationScreenY, int xMax, int yMax) {
         int mouseX = (int) e.getLocationOnScreen().getX();
         int mouseY = (int) e.getLocationOnScreen().getY();
-        System.out.println("mouseX " + mouseX + " mouseY " + mouseY);
 
         if (mouseX < locationScreenX) robot.mouseMove(locationScreenX, mouseY);
         else if (mouseX > xMax) robot.mouseMove(xMax, mouseY);
@@ -279,7 +274,8 @@ public class WindowSelectColor extends JFrame {
     private void createComponent(){
         arrayColor = new ArrayColorSelector();
         lineColor = new LineSelectColor();
-        infoColor = createInfoColor();
+        //the JPanel where all the date of the color will be
+        JPanel infoColor = createInfoColor();
 
         contentPane.add(arrayColor, BorderLayout.CENTER);
         contentPane.add(lineColor, BorderLayout.SOUTH);
