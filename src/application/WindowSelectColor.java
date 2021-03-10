@@ -20,10 +20,10 @@ public class WindowSelectColor extends JFrame {
     private TriggerClass triggerMouse = TriggerClass.OUT;
 
     /** the height of the JFrame */
-    public static final int HEIGHT = 850;
+    public static final int HEIGHT = 600;
 
     /** the width of the JFrame*/
-    public static final int WIDTH = 765;
+    public static final int WIDTH = 680;
 
     /** JPanel with all the color*/
     private ArrayColorSelector arrayColor;

@@ -7,9 +7,9 @@ import java.awt.*;
 public class ArrayColorSelector extends JPanel {
 
     /** height of the JPanel*/
-    private static final int HEIGHT = 765;
+    private static final int HEIGHT = 515;
     /** width of the JPanel*/
-    private static final int WIDTH = 765;
+    private static final int WIDTH = 680;
     /** ratio of the value HEIGHT/RATIO = 255*/
     private static final int RATIO = 3;
 

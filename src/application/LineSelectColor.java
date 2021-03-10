@@ -6,7 +6,7 @@ import java.awt.*;
 /** the line selector*/
 public class LineSelectColor extends JPanel {
 
-    private final static int WIDTH = 765;
+    private final static int WIDTH = 680;
     private final static int RATIO = 127;
 
     public LineSelectColor() throws HeadlessException {
