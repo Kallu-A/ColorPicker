@@ -11,7 +11,6 @@ Then you have a panel of variation of this color
 ![panel.png](ressourcesREADME/panel.png)
 
 select the color you want and on the top you get the value rgb and hex
-
 ## Show the color 
 
 on the top you have that
