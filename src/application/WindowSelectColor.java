@@ -36,6 +36,9 @@ public class WindowSelectColor extends JFrame {
     /** show the value rgb of the color*/
     private JLabel valueRGB;
 
+    /** show the value rgb and be a input*/
+    private JTextField valueRGBdisplay;
+
     /** show the value hex of the color*/
     private JLabel valueHex;
 
@@ -80,6 +83,7 @@ public class WindowSelectColor extends JFrame {
 
         createComponent();
 
+        setInfoColor(new Color(180,80,20));
         setVisible(true);
     }
 
@@ -144,6 +148,26 @@ public class WindowSelectColor extends JFrame {
         arrayColor.paint(arrayColor.getGraphics());
     }
 
+    /** do the actiion when rgb is input*/
+    private void actionInInputRGB(ActionEvent event){
+        String value = valueRGBdisplay.getText().replace(" ", "");
+        String[] eachData = value.split(",");
+       if (eachData.length < 3) {
+           valueRGBdisplay.setForeground(Color.decode("#ff001b"));
+           return;
+       }
+       Color color;
+       try {
+           color = new Color(Integer.parseInt(eachData[0]), Integer.parseInt(eachData[1]), Integer.parseInt(eachData[2]));
+       } catch (Exception error){
+           valueRGBdisplay.setForeground(Color.decode("#ff001b"));
+           return;
+       }
+       setInfoColor(color);
+       arrayColor.setValueOfColor(color);
+       arrayColor.paint(arrayColor.getGraphics());
+    }
+
     /** create all the JPanel and add them*/
     private void createComponent(){
         arrayColor = new ArrayColorSelector();
@@ -168,11 +192,14 @@ public class WindowSelectColor extends JFrame {
 
         valueRGB = new JLabel("Value RGB ");
         valueHex = new JLabel("Value hexadecimal ");
-        valueHexDisplay = new JTextField("      ");
+        valueHexDisplay = new JTextField("       ");
+        valueRGBdisplay = new JTextField("             ");
+        valueRGBdisplay.addActionListener(this::actionInInputRGB);
         valueHexDisplay.addActionListener(this::actionInInputHex);
 
         pane.add(colorSelect);
         pane.add(valueRGB);
+        pane.add(valueRGBdisplay);
         pane.add(valueHex);
         pane.add(valueHexDisplay);
 
@@ -182,7 +209,9 @@ public class WindowSelectColor extends JFrame {
     /** actualise all the date of the new pixel chose*/
     private void setInfoColor(Color color){
         colorSelect.setBackground(color);
-        valueRGB.setText("Value RGB | R:" + color.getRed() + " G:" + color.getGreen() + " B:" + color.getBlue());
+        valueRGB.setText("Value RGB :");
+        valueRGBdisplay.setForeground(Color.BLACK);
+        valueRGBdisplay.setText( color.getRed() + ", " + color.getGreen() + ", " + color.getBlue());
         valueHex.setText("Value hexadecimal :");
         valueHexDisplay.setForeground(Color.BLACK);
         valueHexDisplay.setText("#"+Integer.toHexString(color.getRGB()).substring(2));
